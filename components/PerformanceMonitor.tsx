@@ -25,7 +25,8 @@ export default function PerformanceMonitor() {
       const fidObserver = new PerformanceObserver((list) => {
         for (const entry of list.getEntries()) {
           if (entry.entryType === 'first-input') {
-            console.log('FID:', entry.processingStart - entry.startTime)
+            const fidEntry = entry as PerformanceEventTiming
+            console.log('FID:', fidEntry.processingStart - fidEntry.startTime)
           }
         }
       })

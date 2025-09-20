@@ -11,7 +11,7 @@ interface RoleSwitchProps {
 }
 
 export default function RoleSwitch({ currentRole, onRoleChange }: RoleSwitchProps) {
-  const { updateProfile, updateRole } = useAuth()
+  const { updateProfile } = useAuth()
   const [loading, setLoading] = useState(false)
   const [showConfirmation, setShowConfirmation] = useState(false)
   const [pendingRole, setPendingRole] = useState<'guest' | 'host' | null>(null)
@@ -28,12 +28,7 @@ export default function RoleSwitch({ currentRole, onRoleChange }: RoleSwitchProp
 
     setLoading(true)
     try {
-      // Try using the dedicated updateRole method first, fallback to updateProfile
-      if (updateRole) {
-        await updateRole(pendingRole)
-      } else {
-        await updateProfile({ role: pendingRole })
-      }
+      await updateProfile({ role: pendingRole })
       
       toast.success(`Role updated to ${pendingRole}!`, {
         icon: <CheckCircle className="h-5 w-5 text-green-500" />,

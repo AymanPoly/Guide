@@ -32,7 +32,7 @@ export default function RegisterPage() {
     }
 
     try {
-      await signUp(formData.email, formData.password, formData.fullName, formData.role, formData.city)
+      await signUp(formData.email, formData.password, formData.fullName)
       toast.success('Account created successfully! Please check your email to verify your account.')
       router.push('/auth/login')
     } catch (error: any) {

@@ -1,7 +1,7 @@
 {
   "functions": {
     "app/**/*.tsx": {
-      "runtime": "nodejs22.15.0"
+      "runtime": "nodejs18.x"
     }
   },
   "headers": [

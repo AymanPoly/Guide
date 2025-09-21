@@ -194,7 +194,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: redirectUrl
+        redirectTo: 'https://verified-guide.netlify.app/auth/callback'
       }
     })
 

@@ -268,10 +268,16 @@ export function useOptimizedAuth() {
   const signInWithGoogle = useCallback(async () => {
     try {
       setState(prev => ({ ...prev, loading: true, error: null }))
+      
+      // Use production URL for redirect
+      const redirectUrl = process.env.NODE_ENV === 'production' 
+        ? 'https://verified-guide.netlify.app/auth/callback'
+        : `${window.location.origin}/auth/callback`
+      
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/auth/callback`
+          redirectTo: redirectUrl
         }
       })
       

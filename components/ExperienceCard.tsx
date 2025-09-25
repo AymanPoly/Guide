@@ -75,24 +75,14 @@ export function useOptimizedAuth() {
   }, [])
 
   const handleOAuthUser = useCallback(async (user: User) => {
-    console.log('🔍 Handling OAuth user:', user.email, 'ID:', user.id)
-    
     try {
-      const { data: existingProfile, error: fetchError } = await supabase
+      const { data: existingProfile } = await supabase
         .from('profiles')
         .select('*')
         .eq('auth_uid', user.id)
         .single()
 
-      if (fetchError && fetchError.code !== 'PGRST116') {
-        console.error('❌ Error checking existing profile:', fetchError)
-        return
-      }
-
-      console.log('🔍 Existing profile check:', existingProfile ? 'Found' : 'Not found')
-
       if (!existingProfile) {
-        console.log('🔨 Creating new profile for OAuth user...')
         const { error } = await supabase
           .from('profiles')
           .insert({
@@ -170,12 +160,9 @@ export function useOptimizedAuth() {
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        console.log('🔄 Auth state change:', event, 'User:', session?.user?.email)
-        
         if (session?.user) {
           // Handle OAuth users
           if (event === 'SIGNED_IN') {
-            console.log('👤 New sign-in detected, handling OAuth user...')
             await handleOAuthUser(session.user)
           }
           

@@ -62,21 +62,21 @@ export default function ExperienceCard({ experience }: ExperienceCardProps) {
     <Link
       href={`/experiences/${experience.id}`}
       className="card hover:shadow-lg transition-shadow duration-200"
-    >
-      <div className="aspect-video bg-gray-200 rounded-lg mb-4 overflow-hidden">
-        {experience.image_url ? (
-          <OptimizedImage
-            src={experience.image_url}
-            alt={experience.image_alt_text || experience.title}
-            className="w-full h-full"
-            placeholder="blur"
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center">
-            <ImageIcon className="h-8 w-8 text-gray-400" />
-          </div>
-        )}
-      </div>
+    > 
+    <div className="aspect-video bg-gray-200 rounded-lg mb-4 overflow-hidden">
+      {experience.image_url ? (
+        <img
+          src={experience.image_url}
+          alt={experience.image_alt_text || experience.title}
+          className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+        />
+      ) : (
+        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">
+          <ImageIcon className="h-12 w-12 text-gray-400" />
+        </div>
+      )}
+    </div>
+     
       <h4 className="font-semibold text-lg mb-2 line-clamp-2">{experience.title}</h4>
       <p className="text-gray-600 text-sm mb-3 line-clamp-2">{experience.description}</p>
       <div className="flex items-center justify-between">

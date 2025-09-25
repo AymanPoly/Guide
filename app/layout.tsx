@@ -8,7 +8,6 @@ import ErrorBoundary from '@/components/ErrorBoundary'
 import { InstallPromptWithSuspense } from '@/components/LazyComponents'
 import PerformanceMonitor from '@/components/PerformanceMonitor'
 import ResourcePreloader from '@/components/ResourcePreloader'
-import PerformanceOptimizer from '@/components/PerformanceOptimizer'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -53,7 +52,6 @@ export default function RootLayout({
               <InstallPromptWithSuspense />
               <PerformanceMonitor />
               <ResourcePreloader />
-              <PerformanceOptimizer />
             </PWAProvider>
           </OptimizedProviders>
         </ErrorBoundary>

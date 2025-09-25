@@ -1,38 +1,54 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Enable experimental features for better performance
+  reactStrictMode: true,
+  swcMinify: true,
   experimental: {
-    optimizeCss: true,
-    optimizePackageImports: ['lucide-react', '@supabase/supabase-js'],
+    appDir: true,
   },
-
   // Image optimization
   images: {
+    domains: ['your-supabase-project.supabase.co'],
     formats: ['image/webp', 'image/avif'],
-    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
-    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
     minimumCacheTTL: 60,
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
-
-  // Compression
+  // Compression and optimization
   compress: true,
-
-  // Bundle analyzer (uncomment to analyze bundle size)
-  // webpack: (config, { isServer }) => {
-  //   if (!isServer) {
-  //     config.resolve.fallback = {
-  //       ...config.resolve.fallback,
-  //       fs: false,
-  //     }
-  //   }
-  //   return config
-  // },
-
-  // Headers for better caching
+  poweredByHeader: false,
+  // Bundle optimization
+  webpack: (config, { dev, isServer }) => {
+    if (!dev && !isServer) {
+      config.optimization.splitChunks = {
+        chunks: 'all',
+        cacheGroups: {
+          vendor: {
+            test: /[\\/]node_modules[\\/]/,
+            name: 'vendors',
+            chunks: 'all',
+          },
+          common: {
+            name: 'common',
+            minChunks: 2,
+            chunks: 'all',
+            enforce: true,
+          },
+        },
+      }
+    }
+    return config
+  },
   async headers() {
     return [
+      {
+        source: '/sw.js',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=0, must-revalidate',
+          },
+        ],
+      },
       {
         source: '/(.*)',
         headers: [
@@ -51,36 +67,17 @@ const nextConfig = {
         ],
       },
       {
-        source: '/static/(.*)',
+        source: '/images/(.*)',
         headers: [
           {
             key: 'Cache-Control',
             value: 'public, max-age=31536000, immutable',
           },
         ],
-      },
-      {
-        source: '/_next/static/(.*)',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable',
-          },
-        ],
-      },
-    ]
-  },
-
-  // Redirects for better SEO
-  async redirects() {
-    return [
-      {
-        source: '/home',
-        destination: '/',
-        permanent: true,
       },
     ]
   },
 }
 
 module.exports = nextConfig
+

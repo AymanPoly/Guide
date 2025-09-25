@@ -3,7 +3,6 @@
 import Link from 'next/link'
 import { useAuth } from '@/app/optimized-providers'
 import { User, Plus, Home } from 'lucide-react'
-import NotificationDropdown from './NotificationDropdown'
 
 export default function Header() {
   const { user, profile } = useAuth()
@@ -24,7 +23,6 @@ export default function Header() {
                   <Home className="h-5 w-5" />
                   <span className="hidden sm:inline">Home</span>
                 </Link>
-                <NotificationDropdown />
                 <Link href="/dashboard" className="flex items-center space-x-1 text-gray-700 hover:text-primary-600">
                   <User className="h-5 w-5" />
                   <span className="hidden sm:inline">{profile?.full_name}</span>

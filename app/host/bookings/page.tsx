@@ -8,6 +8,7 @@ import Link from 'next/link'
 import { Calendar, User, MessageCircle, Check, X, Send, Star } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { useMessages } from '@/hooks/useMessages'
+import { createNotification } from '@/hooks/useNotifications'
 
 type Booking = Database['public']['Tables']['bookings']['Row'] & {
   experiences: Database['public']['Tables']['experiences']['Row']
@@ -75,6 +76,20 @@ export default function HostBookingsPage() {
       setBookings(prev => prev.map(booking => 
         booking.id === bookingId ? { ...booking, status } : booking
       ))
+
+      // Create notification for guest
+      const booking = bookings.find(b => b.id === bookingId)
+      if (booking) {
+        await createNotification(
+          booking.guest_id,
+          status === 'confirmed' ? 'booking_confirmed' : 'booking_cancelled',
+          status === 'confirmed' ? 'Booking Confirmed!' : 'Booking Cancelled',
+          status === 'confirmed' 
+            ? `Your booking for "${booking.experiences.title}" has been confirmed by the host.`
+            : `Your booking for "${booking.experiences.title}" has been cancelled by the host.`,
+          { booking_id: bookingId, experience_id: booking.experience_id }
+        )
+      }
 
       toast.success(`Booking ${status} successfully`)
     } catch (error: any) {

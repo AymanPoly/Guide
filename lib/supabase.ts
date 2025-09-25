@@ -53,8 +53,6 @@ export type Database = {
           price: string
           contact_method: 'whatsapp' | 'email'
           published: boolean
-          image_url: string | null
-          image_alt_text: string | null
           created_at: string
           updated_at: string
         }
@@ -67,8 +65,6 @@ export type Database = {
           price: string
           contact_method: 'whatsapp' | 'email'
           published?: boolean
-          image_url?: string | null
-          image_alt_text?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -81,8 +77,6 @@ export type Database = {
           price?: string
           contact_method?: 'whatsapp' | 'email'
           published?: boolean
-          image_url?: string | null
-          image_alt_text?: string | null
           created_at?: string
           updated_at?: string
         }

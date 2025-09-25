@@ -95,8 +95,8 @@ export function useOptimizedExperiences() {
       const { data, error } = await supabase
         .from('experiences')
         .select(`
-          *,
-          profiles (*)
+          id, title, description, city, price, image_url, image_alt_text, created_at,
+          profiles (full_name, verified)
         `)
         .eq('published', true)
         .order('created_at', { ascending: false })
@@ -104,7 +104,7 @@ export function useOptimizedExperiences() {
 
       if (error) throw error
 
-      const experiences = (data || []) as Experience[]
+      const experiences = data || []
       
       // Cache for 2 minutes
       setCachedData(cacheKey, experiences, 2 * 60 * 1000)
@@ -188,9 +188,9 @@ export function useOptimizedExperiences() {
       if (error) throw error
 
       // Cache for 5 minutes
-      setCachedData(cacheKey, data as Experience, 5 * 60 * 1000)
+      setCachedData(cacheKey, data, 5 * 60 * 1000)
       
-      return data as Experience
+      return data
     } catch (error) {
       console.error('Error prefetching experience:', error)
       return null

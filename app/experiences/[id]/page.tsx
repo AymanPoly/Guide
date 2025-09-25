@@ -11,6 +11,7 @@ import { ArrowLeft, MapPin, User, Star, MessageCircle, Mail, Phone, Image as Ima
 import OptimizedImage from '@/components/OptimizedImage'
 import FeedbackDisplay from '@/components/FeedbackDisplay'
 import toast from 'react-hot-toast'
+import { createNotification } from '@/hooks/useNotifications'
 
 type Experience = Database['public']['Tables']['experiences']['Row'] & {
   profiles: Database['public']['Tables']['profiles']['Row']
@@ -73,15 +74,38 @@ export default function ExperienceDetailPage() {
     setBookingLoading(true)
 
     try {
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('bookings')
         .insert({
           experience_id: experience.id,
           guest_id: profile.id,
           guest_message: bookingMessage,
         })
+        .select()
+        .single()
 
       if (error) throw error
+
+      // Create notification for host
+      try {
+        console.log('Creating notification for host:', experience.host_id)
+        await createNotification(
+          experience.host_id,
+          'booking_request',
+          'New Booking Request',
+          `${profile.full_name} has requested to book "${experience.title}".`,
+          { 
+            booking_id: data.id, 
+            experience_id: experience.id,
+            guest_id: profile.id,
+            guest_name: profile.full_name
+          }
+        )
+        console.log('Notification created successfully')
+      } catch (notificationError) {
+        console.error('Error creating notification:', notificationError)
+        // Don't fail the booking if notification fails
+      }
 
       toast.success('Booking request sent! The host will contact you soon.')
       setShowBookingForm(false)

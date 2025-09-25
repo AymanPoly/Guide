@@ -9,6 +9,7 @@ import { Calendar, MapPin, User, MessageCircle, Send, Star } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { useMessages } from '@/hooks/useMessages'
 import FeedbackForm from '@/components/FeedbackForm'
+import { createNotification } from '@/hooks/useNotifications'
 
 type Booking = Database['public']['Tables']['bookings']['Row'] & {
   experiences: Database['public']['Tables']['experiences']['Row'] & {

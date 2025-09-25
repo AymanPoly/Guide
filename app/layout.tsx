@@ -8,8 +8,7 @@ import ErrorBoundary from '@/components/ErrorBoundary'
 import { InstallPromptWithSuspense } from '@/components/LazyComponents'
 import PerformanceMonitor from '@/components/PerformanceMonitor'
 import ResourcePreloader from '@/components/ResourcePreloader'
-import AccessibilityEnhancer from '@/components/AccessibilityEnhancer'
-import OnboardingWrapper from '@/components/OnboardingWrapper'
+import PerformanceOptimizer from '@/components/PerformanceOptimizer'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -40,7 +39,7 @@ export default function RootLayout({
       <head>
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#0ea5e9" />
-        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <meta name="apple-mobile-web-app-title" content="Guide" />
         <link rel="apple-touch-icon" href="/icons/icon-192x192.svg" />
@@ -54,8 +53,7 @@ export default function RootLayout({
               <InstallPromptWithSuspense />
               <PerformanceMonitor />
               <ResourcePreloader />
-              <AccessibilityEnhancer />
-              <OnboardingWrapper />
+              <PerformanceOptimizer />
             </PWAProvider>
           </OptimizedProviders>
         </ErrorBoundary>

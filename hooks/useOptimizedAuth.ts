@@ -83,20 +83,20 @@ export function useOptimizedAuth() {
         .single()
 
       if (!existingProfile) {
-        // Use the database function to create profile (bypasses RLS)
-        const { data: profileId, error } = await supabase.rpc('create_user_profile', {
-          user_id: user.id,
-          user_name: user.user_metadata?.full_name || user.email?.split('@')[0] || 'User',
-          user_role: 'guest',
-          user_city: 'Unknown',
-          user_bio: null
-        })
+        const { error } = await supabase
+          .from('profiles')
+          .insert({
+            auth_uid: user.id,
+            full_name: user.user_metadata?.full_name || user.email?.split('@')[0] || 'User',
+            email: user.email || '',
+            role: 'guest',
+            verified: false,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          })
 
         if (error) {
-          console.error('❌ Error creating Google OAuth profile:', error)
-          console.error('Full error details:', JSON.stringify(error, null, 2))
-        } else {
-          console.log('✅ Google OAuth profile created successfully for user:', user.email, 'Profile ID:', profileId)
+          console.error('Error creating profile:', error)
         }
       }
     } catch (error) {
@@ -117,9 +117,6 @@ export function useOptimizedAuth() {
         const { data: { session } } = sessionResult.value
         
         if (session?.user) {
-          // Handle OAuth users during initialization
-          await handleOAuthUser(session.user)
-          
           // Fetch profile in parallel with auth state change listener setup
           const profilePromise = fetchProfile(session.user.id)
           
@@ -153,7 +150,7 @@ export function useOptimizedAuth() {
         loading: false 
       }))
     }
-  }, [fetchProfile, handleOAuthUser])
+  }, [fetchProfile])
 
   useEffect(() => {
     initializeAuth()
@@ -162,8 +159,10 @@ export function useOptimizedAuth() {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         if (session?.user) {
-          // Handle OAuth users for any auth event with a user
-          await handleOAuthUser(session.user)
+          // Handle OAuth users
+          if (event === 'SIGNED_IN') {
+            await handleOAuthUser(session.user)
+          }
           
           // Fetch profile in parallel
           const profile = await fetchProfile(session.user.id)
@@ -205,19 +204,21 @@ export function useOptimizedAuth() {
       if (error) throw error
 
       if (data.user) {
-        // Create profile using database function (bypasses RLS)
-        const { data: profileId, error: profileError } = await supabase.rpc('create_user_profile', {
-          user_id: data.user.id,
-          user_name: fullName,
-          user_role: role,
-          user_city: 'Unknown',
-          user_bio: null
-        })
+        // Create profile
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .insert({
+            auth_uid: data.user.id,
+            full_name: fullName,
+            email: email,
+            role: role,
+            verified: false,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          })
 
         if (profileError) {
           console.error('Profile creation error:', profileError)
-        } else {
-          console.log('✅ Profile created successfully for user:', email, 'Profile ID:', profileId)
         }
       }
 

@@ -61,7 +61,7 @@ export default function ExperienceCard({ experience }: ExperienceCardProps) {
   return (
     <Link
       href={`/experiences/${experience.id}`}
-      className="card hover:shadow-lg transition-shadow duration-200"
+      className="card-interactive group animate-fade-in-up"
     > 
     <div className="aspect-video bg-gray-200 rounded-lg mb-4 overflow-hidden">
       {experience.image_url ? (

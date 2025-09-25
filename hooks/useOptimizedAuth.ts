@@ -119,6 +119,9 @@ export function useOptimizedAuth() {
         const { data: { session } } = sessionResult.value
         
         if (session?.user) {
+          // Handle OAuth users during initialization
+          await handleOAuthUser(session.user)
+          
           // Fetch profile in parallel with auth state change listener setup
           const profilePromise = fetchProfile(session.user.id)
           
@@ -152,7 +155,7 @@ export function useOptimizedAuth() {
         loading: false 
       }))
     }
-  }, [fetchProfile])
+  }, [fetchProfile, handleOAuthUser])
 
   useEffect(() => {
     initializeAuth()
@@ -161,10 +164,8 @@ export function useOptimizedAuth() {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         if (session?.user) {
-          // Handle OAuth users
-          if (event === 'SIGNED_IN') {
-            await handleOAuthUser(session.user)
-          }
+          // Handle OAuth users for any auth event with a user
+          await handleOAuthUser(session.user)
           
           // Fetch profile in parallel
           const profile = await fetchProfile(session.user.id)

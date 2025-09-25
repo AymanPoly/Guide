@@ -88,15 +88,17 @@ export function useOptimizedAuth() {
           .insert({
             auth_uid: user.id,
             full_name: user.user_metadata?.full_name || user.email?.split('@')[0] || 'User',
-            email: user.email || '',
             role: 'guest',
-            verified: false,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString()
+            city: 'Unknown',
+            bio: null,
+            verified: false
           })
 
         if (error) {
-          console.error('Error creating profile:', error)
+          console.error('❌ Error creating Google OAuth profile:', error)
+          console.error('Full error details:', JSON.stringify(error, null, 2))
+        } else {
+          console.log('✅ Google OAuth profile created successfully for user:', user.email)
         }
       }
     } catch (error) {
@@ -117,6 +119,9 @@ export function useOptimizedAuth() {
         const { data: { session } } = sessionResult.value
         
         if (session?.user) {
+          // Handle OAuth users during initialization
+          await handleOAuthUser(session.user)
+          
           // Fetch profile in parallel with auth state change listener setup
           const profilePromise = fetchProfile(session.user.id)
           
@@ -150,7 +155,7 @@ export function useOptimizedAuth() {
         loading: false 
       }))
     }
-  }, [fetchProfile])
+  }, [fetchProfile, handleOAuthUser])
 
   useEffect(() => {
     initializeAuth()
@@ -159,10 +164,8 @@ export function useOptimizedAuth() {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         if (session?.user) {
-          // Handle OAuth users
-          if (event === 'SIGNED_IN') {
-            await handleOAuthUser(session.user)
-          }
+          // Handle OAuth users for any auth event with a user
+          await handleOAuthUser(session.user)
           
           // Fetch profile in parallel
           const profile = await fetchProfile(session.user.id)
@@ -268,16 +271,10 @@ export function useOptimizedAuth() {
   const signInWithGoogle = useCallback(async () => {
     try {
       setState(prev => ({ ...prev, loading: true, error: null }))
-      
-      // Use production URL for redirect
-      const redirectUrl = process.env.NODE_ENV === 'production' 
-        ? 'https://verified-guide.netlify.app/auth/callback'
-        : 'https://verified-guide.netlify.app/auth/callback'
-      
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: redirectUrl
+          redirectTo: `${window.location.origin}/auth/callback`
         }
       })
       

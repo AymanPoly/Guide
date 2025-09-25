@@ -25,11 +25,11 @@ export default function ResourcePreloader() {
       })
     }
 
-    // Preload critical images
+    // Preload critical images that will be used immediately
     const preloadImages = () => {
+      // Only preload the favicon that's actually used
       const criticalImages = [
-        '/icons/icon-192x192.svg',
-        '/icons/icon-512x512.svg'
+        '/icons/icon-192x192.svg' // This is used as the favicon
       ]
       
       criticalImages.forEach(src => {

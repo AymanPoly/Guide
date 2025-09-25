@@ -186,10 +186,15 @@ export function Providers({ children }: { children: React.ReactNode }) {
   }
 
   const signInWithGoogle = async () => {
+    // Use production URL for redirect
+    const redirectUrl = process.env.NODE_ENV === 'production' 
+      ? 'https://verified-guide.netlify.app/auth/callback'
+      : `${window.location.origin}/auth/callback`
+    
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`
+        redirectTo: 'https://verified-guide.netlify.app/auth/callback'
       }
     })
 

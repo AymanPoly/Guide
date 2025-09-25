@@ -187,5 +187,5 @@ This project is licensed under the MIT License.
 
 ## Support
 
-For support, email support@localexp.com or create an issue in the repository.
+For support, email ayman.timjicht@e-polytechnique.ma or create an issue in the repository.
 

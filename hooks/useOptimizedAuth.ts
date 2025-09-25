@@ -88,15 +88,17 @@ export function useOptimizedAuth() {
           .insert({
             auth_uid: user.id,
             full_name: user.user_metadata?.full_name || user.email?.split('@')[0] || 'User',
-            email: user.email,
             role: 'guest',
-            verified: false,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString()
+            city: 'Unknown',
+            bio: null,
+            verified: false
           })
 
         if (error) {
-          console.error('Error creating profile:', error)
+          console.error('❌ Error creating Google OAuth profile:', error)
+          console.error('Full error details:', JSON.stringify(error, null, 2))
+        } else {
+          console.log('✅ Google OAuth profile created successfully for user:', user.email)
         }
       }
     } catch (error) {
@@ -268,16 +270,10 @@ export function useOptimizedAuth() {
   const signInWithGoogle = useCallback(async () => {
     try {
       setState(prev => ({ ...prev, loading: true, error: null }))
-      
-      // Use production URL for redirect
-      const redirectUrl = process.env.NODE_ENV === 'production' 
-        ? 'https://verified-guide.netlify.app/auth/callback'
-        : 'https://verified-guide.netlify.app/auth/callback'
-      
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: redirectUrl
+          redirectTo: `${window.location.origin}/auth/callback`
         }
       })
       

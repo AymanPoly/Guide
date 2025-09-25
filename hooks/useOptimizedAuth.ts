@@ -88,7 +88,7 @@ export function useOptimizedAuth() {
           .insert({
             auth_uid: user.id,
             full_name: user.user_metadata?.full_name || user.email?.split('@')[0] || 'User',
-            email: user.email || '',
+            email: user.email,
             role: 'guest',
             verified: false,
             created_at: new Date().toISOString(),

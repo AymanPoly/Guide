@@ -6,7 +6,6 @@ import { User } from '@supabase/supabase-js'
 import { Database } from '@/lib/supabase'
 
 type Profile = Database['public']['Tables']['profiles']['Row']
-
 interface AuthContextType {
   user: User | null
   profile: Profile | null
@@ -14,11 +13,12 @@ interface AuthContextType {
   error: string | null
   signUp: (email: string, password: string, fullName: string, role?: 'guest' | 'host') => Promise<{ data: any; error: any }>
   signIn: (email: string, password: string) => Promise<{ data: any; error: any }>
-  signOut: () => Promise<void>
+  signOut: () => Promise<{ success: boolean; error: any }>
   signInWithGoogle: () => Promise<{ data: any; error: any }>
   updateProfile: (updates: Partial<Profile>) => Promise<{ success: boolean; error: any }>
   refetchProfile: () => Promise<Profile | null>
 }
+
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 

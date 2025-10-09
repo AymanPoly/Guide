@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useAuth } from '@/app/optimized-providers'
-import { User, Plus, Home } from 'lucide-react'
+import { User, Plus, Home, Calendar } from 'lucide-react'
 
 export default function Header() {
   const { user, profile } = useAuth()
@@ -22,6 +22,13 @@ export default function Header() {
                 <Link href="/" className="flex items-center space-x-1 text-gray-700 hover:text-primary-600">
                   <Home className="h-5 w-5" />
                   <span className="hidden sm:inline">Home</span>
+                </Link>
+                <Link 
+                  href={profile?.role === 'host' ? '/host/bookings' : '/guest/bookings'} 
+                  className="flex items-center space-x-1 text-gray-700 hover:text-primary-600"
+                >
+                  <Calendar className="h-5 w-5" />
+                  <span className="hidden sm:inline">Bookings</span>
                 </Link>
                 <Link href="/dashboard" className="flex items-center space-x-1 text-gray-700 hover:text-primary-600">
                   <User className="h-5 w-5" />

@@ -8,6 +8,7 @@ import ErrorBoundary from '@/components/ErrorBoundary'
 import { InstallPromptWithSuspense } from '@/components/LazyComponents'
 import PerformanceMonitor from '@/components/PerformanceMonitor'
 import ResourcePreloader from '@/components/ResourcePreloader'
+import Footer from '@/components/Footer'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -48,6 +49,7 @@ export default function RootLayout({
           <OptimizedProviders>
             <PWAProvider>
               {children}
+              <Footer />
               <Toaster position="top-center" />
               <InstallPromptWithSuspense />
               <PerformanceMonitor />

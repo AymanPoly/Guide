@@ -118,8 +118,24 @@ export function Providers({ children }: { children: React.ReactNode }) {
   }
 
   const signOut = async () => {
-    const { error } = await supabase.auth.signOut()
-    if (error) throw error
+    try {
+      const { error } = await supabase.auth.signOut()
+      if (error) throw error
+      
+      // Clear all local state
+      setUser(null)
+      setProfile(null)
+      setLoading(false)
+      
+      // Clear session storage
+      if (typeof window !== 'undefined') {
+        sessionStorage.clear()
+        localStorage.removeItem('sb-' + process.env.NEXT_PUBLIC_SUPABASE_URL?.split('//')[1]?.split('.')[0] + '-auth-token')
+      }
+    } catch (error) {
+      console.error('Sign out error:', error)
+      throw error
+    }
   }
 
   const updateProfile = async (updates: Partial<Profile>) => {

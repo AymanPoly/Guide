@@ -41,7 +41,7 @@ export function useOptimizedAuth() {
   const [state, setState] = useState<AuthState>({
     user: null,
     profile: null,
-    loading: true,
+    loading: false,
     error: null
   })
 
@@ -83,20 +83,22 @@ export function useOptimizedAuth() {
         .single()
 
       if (!existingProfile) {
-        // Use the database function to create profile (bypasses RLS)
-        const { data: profileId, error } = await supabase.rpc('create_user_profile', {
-          user_id: user.id,
-          user_name: user.user_metadata?.full_name || user.email?.split('@')[0] || 'User',
-          user_role: 'guest',
-          user_city: 'Unknown',
-          user_bio: null
-        })
+        const { error } = await supabase
+          .from('profiles')
+          .insert({
+            auth_uid: user.id,
+            full_name: user.user_metadata?.full_name || user.email?.split('@')[0] || 'User',
+            role: 'guest',
+            city: 'Unknown',
+            bio: null,
+            verified: false
+          })
 
         if (error) {
           console.error('❌ Error creating Google OAuth profile:', error)
           console.error('Full error details:', JSON.stringify(error, null, 2))
         } else {
-          console.log('✅ Google OAuth profile created successfully for user:', user.email, 'Profile ID:', profileId)
+          console.log('✅ Google OAuth profile created successfully for user:', user.email)
         }
       }
     } catch (error) {
@@ -106,7 +108,7 @@ export function useOptimizedAuth() {
 
   const initializeAuth = useCallback(async () => {
     try {
-      setState(prev => ({ ...prev, loading: true, error: null }))
+      setState(prev => ({ ...prev, loading: false, error: null }))
 
       // Get initial session and profile in parallel
       const [sessionResult] = await Promise.allSettled([
@@ -192,7 +194,7 @@ export function useOptimizedAuth() {
 
   const signUp = useCallback(async (email: string, password: string, fullName: string, role: 'guest' | 'host' = 'guest') => {
     try {
-      setState(prev => ({ ...prev, loading: true, error: null }))
+      setState(prev => ({ ...prev, loading: false, error: null }))
 
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -205,19 +207,21 @@ export function useOptimizedAuth() {
       if (error) throw error
 
       if (data.user) {
-        // Create profile using database function (bypasses RLS)
-        const { data: profileId, error: profileError } = await supabase.rpc('create_user_profile', {
-          user_id: data.user.id,
-          user_name: fullName,
-          user_role: role,
-          user_city: 'Unknown',
-          user_bio: null
-        })
+        // Create profile
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .insert({
+            auth_uid: data.user.id,
+            full_name: fullName,
+            email: email,
+            role: role,
+            verified: false,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          })
 
         if (profileError) {
           console.error('Profile creation error:', profileError)
-        } else {
-          console.log('✅ Profile created successfully for user:', email, 'Profile ID:', profileId)
         }
       }
 
@@ -230,7 +234,7 @@ export function useOptimizedAuth() {
 
   const signIn = useCallback(async (email: string, password: string) => {
     try {
-      setState(prev => ({ ...prev, loading: true, error: null }))
+      setState(prev => ({ ...prev, loading: false, error: null }))
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password
@@ -246,12 +250,22 @@ export function useOptimizedAuth() {
 
   const signOut = useCallback(async () => {
     try {
-      setState(prev => ({ ...prev, loading: true, error: null }))
-      await supabase.auth.signOut()
+      setState(prev => ({ ...prev, loading: false, error: null }))
       
-      // Clear cache
+      // Sign out from Supabase
+      const { error } = await supabase.auth.signOut()
+      if (error) throw error
+      
+      // Clear all caches
       cache.clear()
       
+      // Clear session storage
+      if (typeof window !== 'undefined') {
+        sessionStorage.clear()
+        localStorage.removeItem('sb-' + process.env.NEXT_PUBLIC_SUPABASE_URL?.split('//')[1]?.split('.')[0] + '-auth-token')
+      }
+      
+      // Reset state
       setState(prev => ({ 
         ...prev, 
         user: null,
@@ -259,14 +273,17 @@ export function useOptimizedAuth() {
         loading: false,
         error: null
       }))
+      
+      return { success: true, error: null }
     } catch (error: any) {
       setState(prev => ({ ...prev, error: error.message, loading: false }))
+      return { success: false, error: error.message }
     }
   }, [])
 
   const signInWithGoogle = useCallback(async () => {
     try {
-      setState(prev => ({ ...prev, loading: true, error: null }))
+      setState(prev => ({ ...prev, loading: false, error: null }))
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
@@ -286,7 +303,7 @@ export function useOptimizedAuth() {
     if (!state.profile) return { success: false, error: 'No profile found' }
 
     try {
-      setState(prev => ({ ...prev, loading: true, error: null }))
+      setState(prev => ({ ...prev, loading: false, error: null }))
 
       const { data, error } = await supabase
         .from('profiles')

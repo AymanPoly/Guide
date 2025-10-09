@@ -76,7 +76,7 @@ export default function Footer() {
               {/* X icon */}
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5"><path d="M13.545 10.94 20.03 3h-1.54l-5.64 6.64L7.82 3H3l6.845 9.66L3 21h1.54l6.02-7.08L16.18 21H21l-7.455-10.06ZM11.3 12.82l-.7-.98-5.56-7.8h2.39l4.49 6.3.7.98 5.83 8.18h-2.39l-4.86-6.7Z"/></svg>
             </a>
-            <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="hover:text-gray-900 dark:hover:text-gray-200" aria-label="GitHub">
+            <a href="https://github.com/AymanPoly" target="_blank" rel="noopener noreferrer" className="hover:text-gray-900 dark:hover:text-gray-200" aria-label="GitHub">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5"><path fillRule="evenodd" d="M12 2C6.477 2 2 6.486 2 12.021c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.218.682-.485 0-.239-.009-.87-.014-1.707-2.782.607-3.369-1.343-3.369-1.343-.454-1.156-1.11-1.464-1.11-1.464-.908-.622.069-.61.069-.61 1.004.071 1.532 1.035 1.532 1.035.892 1.53 2.341 1.088 2.91.833.091-.651.35-1.089.636-1.34-2.221-.253-4.555-1.114-4.555-4.957 0-1.095.39-1.99 1.029-2.69-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.027A9.564 9.564 0 0 1 12 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.748-1.027 2.748-1.027.546 1.378.203 2.397.1 2.65.64.7 1.028 1.595 1.028 2.69 0 3.853-2.338 4.701-4.566 4.95.36.31.68.921.68 1.856 0 1.338-.012 2.418-.012 2.748 0 .269.18.581.688.482A10.026 10.026 0 0 0 22 12.021C22 6.486 17.523 2 12 2Z" clipRule="evenodd"/></svg>
             </a>
             <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="hover:text-gray-900 dark:hover:text-gray-200" aria-label="LinkedIn">
@@ -88,6 +88,3 @@ export default function Footer() {
     </footer>
   )
 }
-
-
-

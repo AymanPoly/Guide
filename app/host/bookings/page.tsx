@@ -39,6 +39,13 @@ export default function HostBookingsPage() {
     }
   }, [profile])
 
+  // Set active booking ID to show messages for the first booking
+  useEffect(() => {
+    if (bookings.length > 0 && !activeBookingId) {
+      setActiveBookingId(bookings[0].id)
+    }
+  }, [bookings, activeBookingId])
+
   const fetchBookings = async () => {
     if (!profile) return
 
@@ -233,50 +240,41 @@ export default function HostBookingsPage() {
 
                   {/* Messages thread */}
                   <div className="mt-2">
-                    <button
-                      className="text-sm text-primary-600 hover:underline"
-                      onClick={() => setActiveBookingId(activeBookingId === booking.id ? null : booking.id)}
-                    >
-                      {activeBookingId === booking.id ? 'Hide messages' : 'Show messages'}
-                    </button>
-
-                    {activeBookingId === booking.id && (
-                      <div className="mt-3">
-                        <div className="space-y-2 max-h-56 overflow-y-auto pr-1">
-                          {messages.length === 0 ? (
-                            <p className="text-sm text-gray-500">No messages yet.</p>
-                          ) : (
-                            messages.map(m => (
-                              <div key={m.id} className={`text-sm ${m.sender_profile_id === profile?.id ? 'text-right' : 'text-left'}`}>
-                                <span className={`inline-block px-3 py-2 rounded-lg ${m.sender_profile_id === profile?.id ? 'bg-primary-600 text-white' : 'bg-gray-100 text-gray-800'}`}>
-                                  {m.body}
-                                </span>
-                              </div>
-                            ))
-                          )}
-                        </div>
-                        <div className="mt-3 flex items-center space-x-2">
-                          <input
-                            value={draftMessage}
-                            onChange={(e) => setDraftMessage(e.target.value)}
-                            className="input flex-1"
-                            placeholder="Write a message to the guest..."
-                          />
-                          <button
-                            className="btn-primary inline-flex items-center"
-                            onClick={async () => {
-                              const text = draftMessage.trim()
-                              if (!text) return
-                              const ok = await sendMessage(text)
-                              if (ok.success) setDraftMessage('')
-                              else toast.error('Failed to send')
-                            }}
-                          >
-                            <Send className="h-4 w-4 mr-1" /> Send
-                          </button>
-                        </div>
+                    <div className="mt-3">
+                      <div className="space-y-2 max-h-56 overflow-y-auto pr-1">
+                        {messages.length === 0 ? (
+                          <p className="text-sm text-gray-500">No messages yet.</p>
+                        ) : (
+                          messages.map(m => (
+                            <div key={m.id} className={`text-sm ${m.sender_profile_id === profile?.id ? 'text-right' : 'text-left'}`}>
+                              <span className={`inline-block px-3 py-2 rounded-lg ${m.sender_profile_id === profile?.id ? 'bg-primary-600 text-white' : 'bg-gray-100 text-gray-800'}`}>
+                                {m.body}
+                              </span>
+                            </div>
+                          ))
+                        )}
                       </div>
-                    )}
+                      <div className="mt-3 flex items-center space-x-2">
+                        <input
+                          value={draftMessage}
+                          onChange={(e) => setDraftMessage(e.target.value)}
+                          className="input flex-1"
+                          placeholder="Write a message to the guest..."
+                        />
+                        <button
+                          className="btn-primary inline-flex items-center"
+                          onClick={async () => {
+                            const text = draftMessage.trim()
+                            if (!text) return
+                            const ok = await sendMessage(text)
+                            if (ok.success) setDraftMessage('')
+                            else toast.error('Failed to send')
+                          }}
+                        >
+                          <Send className="h-4 w-4 mr-1" /> Send
+                        </button>
+                      </div>
+                    </div>
                   </div>
 
                   {booking.status === 'pending' && (

@@ -15,84 +15,36 @@ export const LazyHostExperiences = lazy(() => import('../app/host/experiences/pa
 export const LazyHostBookings = lazy(() => import('../app/host/bookings/page'))
 export const LazyGuestBookings = lazy(() => import('../app/guest/bookings/page'))
 
-// Wrapper components with loading states
+// Wrapper components without loading states
 export function ImageUploadWithSuspense(props: any) {
-  return (
-    <Suspense fallback={<LoadingSpinner size="sm" text="Loading upload..." />}>
-      <LazyImageUpload {...props} />
-    </Suspense>
-  )
+  return <LazyImageUpload {...props} />
 }
 
 export function SearchBarWithSuspense(props: any) {
-  return (
-    <Suspense fallback={<div className="h-12 bg-gray-200 animate-pulse rounded-lg" />}>
-      <LazySearchBar {...props} />
-    </Suspense>
-  )
+  return <LazySearchBar {...props} />
 }
 
 export function RoleSwitchWithSuspense(props: any) {
-  return (
-    <Suspense fallback={<div className="h-8 w-20 bg-gray-200 animate-pulse rounded" />}>
-      <LazyRoleSwitch {...props} />
-    </Suspense>
-  )
+  return <LazyRoleSwitch {...props} />
 }
 
 export function InstallPromptWithSuspense(props: any) {
-  return (
-    <Suspense fallback={null}>
-      <LazyInstallPrompt {...props} />
-    </Suspense>
-  )
+  return <LazyInstallPrompt {...props} />
 }
 
-// Page wrappers
+// Page wrappers without loading states
 export function DashboardWithSuspense(props: any) {
-  return (
-    <Suspense fallback={
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <LoadingSpinner size="lg" text="Loading dashboard..." />
-      </div>
-    }>
-      <LazyDashboard {...props} />
-    </Suspense>
-  )
+  return <LazyDashboard {...props} />
 }
 
 export function HostExperiencesWithSuspense(props: any) {
-  return (
-    <Suspense fallback={
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <LoadingSpinner size="lg" text="Loading experiences..." />
-      </div>
-    }>
-      <LazyHostExperiences {...props} />
-    </Suspense>
-  )
+  return <LazyHostExperiences {...props} />
 }
 
 export function HostBookingsWithSuspense(props: any) {
-  return (
-    <Suspense fallback={
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <LoadingSpinner size="lg" text="Loading bookings..." />
-      </div>
-    }>
-      <LazyHostBookings {...props} />
-    </Suspense>
-  )
+  return <LazyHostBookings {...props} />
 }
 
 export function GuestBookingsWithSuspense(props: any) {
-  return (
-    <Suspense fallback={
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <LoadingSpinner size="lg" text="Loading bookings..." />
-      </div>
-    }>
-      <LazyGuestBookings {...props} />
-    </Suspense>
-  )
+  return <LazyGuestBookings {...props} />
 }

@@ -16,8 +16,7 @@ export default function HomePage() {
 
   const filteredExperiences = searchExperiences(searchCity)
 
-  // Show initial skeletons instead of full-screen spinner to improve perceived speed
-  const isInitialLoading = loading && (!experiences || experiences.length === 0)
+  // Remove loading state - show content immediately
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -51,18 +50,7 @@ export default function HomePage() {
             <p className="text-gray-600">{filteredExperiences.length} experiences found</p>
           </div>
 
-          {isInitialLoading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {Array.from({ length: 6 }).map((_, i) => (
-                <div key={i} className="card animate-pulse">
-                  <div className="aspect-video bg-gray-200 rounded-lg mb-4" />
-                  <div className="h-4 bg-gray-200 rounded w-3/4 mb-3" />
-                  <div className="h-3 bg-gray-200 rounded w-full mb-2" />
-                  <div className="h-3 bg-gray-200 rounded w-5/6" />
-                </div>
-              ))}
-            </div>
-          ) : filteredExperiences.length === 0 ? (
+          {filteredExperiences.length === 0 ? (
             <div className="text-center py-12">
               <MapPin className="h-12 w-12 text-gray-400 mx-auto mb-4" />
               <h4 className="text-lg font-medium text-gray-900 mb-2">No experiences found</h4>

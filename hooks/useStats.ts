@@ -27,7 +27,7 @@ export function useStats(profile: Profile | null) {
     if (!profile) return
 
     try {
-      setLoading(true)
+      setLoading(false)
       setError(null)
 
       // Fetch experiences stats

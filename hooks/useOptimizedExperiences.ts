@@ -70,7 +70,7 @@ function setCachedData<T>(key: string, data: T, ttl: number = 2 * 60 * 1000) { /
 export function useOptimizedExperiences() {
   const [state, setState] = useState<ExperiencesState>({
     experiences: [],
-    loading: true,
+    loading: false,
     error: null
   })
 
@@ -90,7 +90,7 @@ export function useOptimizedExperiences() {
     }
 
     try {
-      setState(prev => ({ ...prev, loading: true, error: null }))
+      setState(prev => ({ ...prev, loading: false, error: null }))
       
       const { data, error } = await supabase
         .from('experiences')

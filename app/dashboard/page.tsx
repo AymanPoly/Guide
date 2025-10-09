@@ -6,9 +6,10 @@ import { useEffect } from 'react'
 import Link from 'next/link'
 import { Calendar, Plus, User, Settings, MapPin } from 'lucide-react'
 import { useStats } from '@/hooks/useStats'
+import toast from 'react-hot-toast'
 
 export default function DashboardPage() {
-  const { user, profile, loading } = useAuth()
+  const { user, profile, loading, signOut } = useAuth()
   const router = useRouter()
   const { stats, loading: statsLoading } = useStats(profile)
 
@@ -18,16 +19,7 @@ export default function DashboardPage() {
     }
   }, [user, loading, router])
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading...</p>
-        </div>
-      </div>
-    )
-  }
+  // Remove loading state - show content immediately
 
   if (!user || !profile) {
     return null
@@ -45,10 +37,15 @@ export default function DashboardPage() {
             <div className="flex items-center space-x-4">
               <Link href="/" className="text-gray-600 hover:text-gray-900">Home</Link>
               <button 
-                onClick={() => {
+                onClick={async () => {
                   if (confirm('Are you sure you want to sign out?')) {
-                    // This will be handled by the auth context
-                    window.location.href = '/auth/login'
+                    try {
+                      await signOut()
+                      toast.success('Signed out successfully')
+                      router.push('/auth/login')
+                    } catch (error: any) {
+                      toast.error('Failed to sign out: ' + (error.message || 'Unknown error'))
+                    }
                   }
                 }}
                 className="text-gray-600 hover:text-gray-900"
@@ -96,35 +93,24 @@ export default function DashboardPage() {
             {/* Stats */}
             <div className="card">
               <h3 className="text-lg font-semibold mb-4">Your Stats</h3>
-              {statsLoading ? (
-                <div className="space-y-4">
-                  {Array.from({ length: 4 }).map((_, i) => (
-                    <div key={i} className="flex justify-between items-center">
-                      <div className="h-4 bg-gray-200 rounded w-32 animate-pulse"></div>
-                      <div className="h-4 bg-gray-200 rounded w-8 animate-pulse"></div>
-                    </div>
-                  ))}
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-600">Total Experiences</span>
+                  <span className="font-semibold">{stats?.totalExperiences || 0}</span>
                 </div>
-              ) : (
-                <div className="space-y-4">
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-600">Total Experiences</span>
-                    <span className="font-semibold">{stats.totalExperiences}</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-600">Published</span>
-                    <span className="font-semibold">{stats.publishedExperiences}</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-600">Total Bookings</span>
-                    <span className="font-semibold">{stats.totalBookings}</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-600">Pending Requests</span>
-                    <span className="font-semibold text-orange-600">{stats.pendingBookings}</span>
-                  </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-600">Published</span>
+                  <span className="font-semibold">{stats?.publishedExperiences || 0}</span>
                 </div>
-              )}
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-600">Total Bookings</span>
+                  <span className="font-semibold">{stats?.totalBookings || 0}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-600">Pending Requests</span>
+                  <span className="font-semibold text-orange-600">{stats?.pendingBookings || 0}</span>
+                </div>
+              </div>
             </div>
 
             {/* Profile Status */}

@@ -86,6 +86,9 @@ export default function ExperienceDetailPage() {
       toast.success('Booking request sent! The host will contact you soon.')
       setShowBookingForm(false)
       setBookingMessage('')
+      
+      // Redirect guest to booking page
+      router.push('/guest/bookings')
     } catch (error: any) {
       toast.error(error.message || 'Failed to send booking request')
     } finally {

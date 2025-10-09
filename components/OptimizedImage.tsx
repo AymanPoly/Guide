@@ -69,26 +69,7 @@ export default function OptimizedImage({
       className={`relative overflow-hidden ${className}`}
       style={{ width, height }}
     >
-      {/* Blur placeholder */}
-      {placeholder === 'blur' && !isLoaded && !hasError && (
-        <div 
-          className="absolute inset-0 bg-gray-200 animate-pulse"
-          style={{
-            backgroundImage: `url(${blurDataURL || defaultBlurDataURL})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            filter: 'blur(8px)',
-            transform: 'scale(1.1)'
-          }}
-        />
-      )}
-
-      {/* Loading skeleton */}
-      {!isLoaded && !hasError && placeholder === 'empty' && (
-        <div className="absolute inset-0 bg-gray-200 animate-pulse flex items-center justify-center">
-          <ImageIcon className="h-8 w-8 text-gray-400" />
-        </div>
-      )}
+      {/* Remove loading placeholders - show content immediately */}
 
       {/* Actual image */}
       {isInView && !hasError && (

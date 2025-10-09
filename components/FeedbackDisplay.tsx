@@ -30,7 +30,7 @@ export default function FeedbackDisplay({
   maxItems = 3 
 }: FeedbackDisplayProps) {
   const [feedback, setFeedback] = useState<Feedback[]>([])
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
   const [showAllFeedback, setShowAllFeedback] = useState(showAll)
 
   useEffect(() => {
@@ -90,25 +90,7 @@ export default function FeedbackDisplay({
 
   const displayFeedback = showAllFeedback ? feedback : feedback.slice(0, maxItems)
 
-  if (loading) {
-    return (
-      <div className="space-y-4">
-        {Array.from({ length: 2 }).map((_, i) => (
-          <div key={i} className="animate-pulse">
-            <div className="flex items-center space-x-3 mb-2">
-              <div className="w-8 h-8 bg-gray-200 rounded-full"></div>
-              <div className="space-y-1">
-                <div className="h-4 bg-gray-200 rounded w-24"></div>
-                <div className="h-3 bg-gray-200 rounded w-16"></div>
-              </div>
-            </div>
-            <div className="h-4 bg-gray-200 rounded w-full mb-2"></div>
-            <div className="h-3 bg-gray-200 rounded w-3/4"></div>
-          </div>
-        ))}
-      </div>
-    )
-  }
+  // Remove loading state - show content immediately
 
   if (feedback.length === 0) {
     return (

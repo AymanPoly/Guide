@@ -8,36 +8,9 @@ import toast from 'react-hot-toast'
 import GoogleSignInButton from '@/components/GoogleSignInButton'
 
 export default function LoginPage() {
-  const { signIn, signInWithGoogle } = useAuth()
+  const { signInWithGoogle } = useAuth()
   const router = useRouter()
-  const [loading, setLoading] = useState(false)
   const [googleLoading, setGoogleLoading] = useState(false)
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-  })
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
-
-    try {
-      await signIn(formData.email, formData.password)
-      toast.success('Welcome back!')
-      router.push('/dashboard')
-    } catch (error: any) {
-      toast.error(error.message || 'Failed to sign in')
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData(prev => ({
-      ...prev,
-      [e.target.name]: e.target.value
-    }))
-  }
 
   const handleGoogleSignIn = async () => {
     setGoogleLoading(true)
@@ -52,87 +25,46 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-primary-600 mb-2">Guide</h1>
-          <h2 className="text-2xl font-bold text-gray-900">Sign in to your account</h2>
-          <p className="mt-2 text-sm text-gray-600">
-            Or{' '}
-            <Link href="/auth/register" className="font-medium text-primary-600 hover:text-primary-500">
-              create a new account
-            </Link>
-          </p>
+          <div className="mx-auto h-12 w-12 bg-primary-600 rounded-full flex items-center justify-center mb-4">
+            <svg className="h-8 w-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+          </div>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Welcome back</h1>
+          <h2 className="text-xl text-gray-600">Sign in to your Guide account</h2>
         </div>
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="card">
-          <form className="space-y-6" onSubmit={handleSubmit}>
+        <div className="bg-white py-8 px-4 shadow-xl rounded-2xl border border-gray-100">
+          <div className="space-y-6">
+            <div className="text-center">
+              <p className="text-sm text-gray-600 mb-8">
+                Continue with your Google account for a seamless experience
+              </p>
+            </div>
+
             <div>
-              <label htmlFor="email" className="label">
-                Email address
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
-                value={formData.email}
-                onChange={handleChange}
-                className="input"
-                placeholder="Enter your email"
+              <GoogleSignInButton
+                onClick={handleGoogleSignIn}
+                loading={googleLoading}
+                text="Sign in with Google"
+                loadingText="Signing in..."
               />
             </div>
 
-            <div>
-              <label htmlFor="password" className="label">
-                Password
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="current-password"
-                required
-                value={formData.password}
-                onChange={handleChange}
-                className="input"
-                placeholder="Enter your password"
-              />
+            <div className="mt-6 text-center">
+              <p className="text-sm text-gray-600">
+                Don't have an account?{' '}
+                <Link href="/auth/register" className="font-semibold text-primary-600 hover:text-primary-500 transition-colors">
+                  Create one here
+                </Link>
+              </p>
             </div>
-
-            <div>
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {loading ? 'Signing in...' : 'Sign in'}
-              </button>
-            </div>
-
-            <div className="mt-6">
-              <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-gray-300" />
-                </div>
-                <div className="relative flex justify-center text-sm">
-                  <span className="px-2 bg-gray-50 text-gray-500">Or continue with</span>
-                </div>
-              </div>
-
-              <div className="mt-6">
-                <GoogleSignInButton
-                  onClick={handleGoogleSignIn}
-                  loading={googleLoading}
-                  text="Sign in with Google"
-                  loadingText="Signing in..."
-                />
-              </div>
-            </div>
-          </form>
+          </div>
         </div>
       </div>
     </div>

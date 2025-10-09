@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useAuth } from '@/app/optimized-providers'
-import { User, Plus, Home, Calendar } from 'lucide-react'
+import { User, Home, Calendar } from 'lucide-react'
 
 export default function Header() {
   const { user, profile } = useAuth()
@@ -18,37 +18,32 @@ export default function Header() {
           </div>
           <div className="flex items-center space-x-4">
             {user ? (
-              <div className="flex items-center space-x-2">
-                <Link href="/" className="flex items-center space-x-1 text-gray-700 hover:text-primary-600">
-                  <Home className="h-5 w-5" />
-                  <span className="hidden sm:inline">Home</span>
-                </Link>
+              <div className="flex items-center space-x-3">
+             
                 <Link 
                   href={profile?.role === 'host' ? '/host/bookings' : '/guest/bookings'} 
-                  className="flex items-center space-x-1 text-gray-700 hover:text-primary-600"
+                  className="flex items-center space-x-2 px-3 py-2 text-sm font-medium text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-all duration-200"
                 >
-                  <Calendar className="h-5 w-5" />
+                  <Calendar className="h-4 w-4" />
                   <span className="hidden sm:inline">Bookings</span>
                 </Link>
-                <Link href="/dashboard" className="flex items-center space-x-1 text-gray-700 hover:text-primary-600">
-                  <User className="h-5 w-5" />
+                <Link 
+                  href="/dashboard" 
+                  className="flex items-center space-x-2 px-3 py-2 text-sm font-medium text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-all duration-200"
+                >
+                  <User className="h-4 w-4" />
                   <span className="hidden sm:inline">{profile?.full_name}</span>
                 </Link>
-                {profile?.role === 'host' && (
-                  <Link href="/host/experiences/new" className="btn-primary flex items-center space-x-1">
-                    <Plus className="h-4 w-4" />
-                    <span>Add Experience</span>
-                  </Link>
-                )}
               </div>
             ) : (
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-3">
                 <Link 
                   href="/auth/login" 
-                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors duration-200 shadow-sm"
-                >
+                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-semibold rounded-lg text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-all duration-200 shadow-sm hover:shadow-md"
+                  >
                   Login
                 </Link>
+              
               </div>
             )}
           </div>
